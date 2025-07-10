@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
-import { taskService } from "@/services/api/taskService";
-import Header from "@/components/organisms/Header";
-import TaskList from "@/components/organisms/TaskList";
 import FloatingAddButton from "@/components/organisms/FloatingAddButton";
-import FilterBar from "@/components/molecules/FilterBar";
-import Modal from "@/components/molecules/Modal";
-import TaskForm from "@/components/molecules/TaskForm";
+import TaskList from "@/components/organisms/TaskList";
+import Header from "@/components/organisms/Header";
 import Empty from "@/components/ui/Empty";
+import FilterBar from "@/components/molecules/FilterBar";
+import TaskForm from "@/components/molecules/TaskForm";
+import Modal from "@/components/molecules/Modal";
+import { taskService } from "@/services/api/taskService";
 
 const TaskDashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -44,10 +44,10 @@ const TaskDashboard = () => {
     let filtered = tasks;
 
     // Apply search filter
-    if (searchQuery) {
+if (searchQuery) {
       filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        task.description.toLowerCase().includes(searchQuery.toLowerCase())
+        task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        task.description?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
@@ -63,7 +63,7 @@ const TaskDashboard = () => {
         break;
     }
 
-    // Apply sorting
+// Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "dueDate":
@@ -71,11 +71,12 @@ const TaskDashboard = () => {
           if (!a.dueDate) return 1;
           if (!b.dueDate) return -1;
           return new Date(a.dueDate) - new Date(b.dueDate);
-        case "priority":
+        case "priority": {
           const priorityOrder = { high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
-        case "createdAt":
-          return new Date(b.createdAt) - new Date(a.createdAt);
+        }
+        case "title":
+          return a.title.localeCompare(b.title);
         default:
           return 0;
       }
@@ -98,7 +99,7 @@ const TaskDashboard = () => {
     setShowTaskModal(true);
   };
 
-  const handleSaveTask = async (taskData) => {
+const handleSaveTask = async (taskData) => {
     try {
       if (editingTask) {
         const updatedTask = await taskService.update(editingTask.id, taskData);
@@ -115,12 +116,13 @@ const TaskDashboard = () => {
       }
       setShowTaskModal(false);
       setEditingTask(null);
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error("Error saving task:", error);
+      toast.error("Failed to save task. Please try again.");
     }
   };
 
-  const handleToggleComplete = async (taskId) => {
+const handleToggleComplete = async (taskId) => {
     try {
       const updatedTask = await taskService.toggleComplete(taskId);
       setTasks(prevTasks =>
@@ -128,21 +130,24 @@ const TaskDashboard = () => {
           task.id === taskId ? updatedTask : task
         )
       );
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      console.error("Error toggling task completion:", error);
+      toast.error("Failed to update task. Please try again.");
     }
   };
 
-  const handleDeleteTask = async (taskId) => {
+const handleDeleteTask = async (taskId) => {
     try {
       await taskService.delete(taskId);
       setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
-    } catch (err) {
-      throw err;
+      toast.success("Task deleted successfully");
+    } catch (error) {
+      console.error("Error deleting task:", error);
+      toast.error("Failed to delete task. Please try again.");
     }
   };
 
-  const handleBulkComplete = async (taskIds) => {
+const handleBulkComplete = async (taskIds) => {
     try {
       await taskService.bulkComplete(taskIds);
       setTasks(prevTasks =>
@@ -152,8 +157,10 @@ const TaskDashboard = () => {
             : task
         )
       );
-    } catch (err) {
-      throw err;
+      toast.success(`${taskIds.length} tasks marked as complete`);
+    } catch (error) {
+      console.error("Error completing tasks:", error);
+      toast.error("Failed to complete tasks. Please try again.");
     }
   };
 
@@ -161,8 +168,10 @@ const TaskDashboard = () => {
     try {
       await taskService.bulkDelete(taskIds);
       setTasks(prevTasks => prevTasks.filter(task => !taskIds.includes(task.id)));
-    } catch (err) {
-      throw err;
+      toast.success(`${taskIds.length} tasks deleted successfully`);
+    } catch (error) {
+      console.error("Error deleting tasks:", error);
+      toast.error("Failed to delete tasks. Please try again.");
     }
   };
 
