@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
+import { useSelector } from "react-redux";
+import { AuthContext } from "../../App";
 import { motion } from "framer-motion";
+import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import SearchBar from "@/components/molecules/SearchBar";
-import ApperIcon from "@/components/ApperIcon";
-import { cn } from "@/utils/cn";
-
 const Header = ({ 
   onAddTask, 
   onSearch, 
@@ -12,59 +13,72 @@ const Header = ({
   completedCount,
   className 
 }) => {
+  const { user } = useSelector((state) => state.user);
+  const { logout } = useContext(AuthContext);
+
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      await logout();
+    }
+  };
+
   return (
     <motion.header
       className={cn(
-        "bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40",
+        "bg-white/90 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50",
         className
       )}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
       transition={{ duration: 0.3 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center space-x-8">
-            <motion.div
-              className="flex items-center space-x-3"
-              whileHover={{ scale: 1.02 }}
-            >
-              <div className="h-8 w-8 bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg flex items-center justify-center">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-purple-400 rounded-lg flex items-center justify-center">
                 <ApperIcon name="CheckSquare" className="h-5 w-5 text-white" />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold gradient-text">TaskFlow</h1>
-                <p className="text-sm text-gray-600">
-                  {completedCount} of {taskCount} tasks completed
-                </p>
-              </div>
-            </motion.div>
+              <h1 className="text-xl font-bold gradient-text">TaskFlow</h1>
+            </div>
+            
+            <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-600">
+              <span>{taskCount} tasks</span>
+              <span>•</span>
+              <span>{completedCount} completed</span>
+            </div>
           </div>
 
           <div className="flex items-center space-x-4">
-            <SearchBar
-              onSearch={onSearch}
-              placeholder="Search tasks..."
-              className="w-64 hidden sm:block"
-            />
+            <div className="hidden md:block">
+              <SearchBar onSearch={onSearch} />
+            </div>
             
             <Button
-              variant="primary"
               onClick={onAddTask}
-              className="flex items-center space-x-2"
+              className="hidden sm:flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white"
             >
               <ApperIcon name="Plus" className="h-4 w-4" />
-              <span className="hidden sm:inline">Add Task</span>
+              <span>New Task</span>
             </Button>
-          </div>
-        </div>
 
-        <div className="pb-4 sm:hidden">
-          <SearchBar
-            onSearch={onSearch}
-            placeholder="Search tasks..."
-            className="w-full"
-          />
+            {user && (
+              <div className="flex items-center space-x-3">
+                <span className="text-sm text-gray-600 hidden sm:block">
+                  Welcome, {user.firstName || user.name || 'User'}
+                </span>
+                <Button
+                  onClick={handleLogout}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-600 hover:text-gray-900"
+                >
+                  <ApperIcon name="LogOut" className="h-4 w-4" />
+                  <span className="hidden sm:inline-block ml-1">Logout</span>
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </motion.header>

@@ -20,11 +20,11 @@ const TaskForm = ({ task, onSave, onCancel, className }) => {
 
   useEffect(() => {
     if (task) {
-      setFormData({
+setFormData({
         title: task.title || "",
         description: task.description || "",
         priority: task.priority || "medium",
-        dueDate: task.dueDate || ""
+        dueDate: task.due_date || ""
       });
     }
   }, [task]);
@@ -61,11 +61,11 @@ const TaskForm = ({ task, onSave, onCancel, className }) => {
     setIsSubmitting(true);
     
     try {
-      await onSave({
+await onSave({
         ...formData,
         title: formData.title.trim(),
         description: formData.description.trim(),
-        dueDate: formData.dueDate || null
+        due_date: formData.dueDate || null
       });
       
       if (!task) {

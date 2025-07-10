@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import Checkbox from "@/components/atoms/Checkbox";
-import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
+import Checkbox from "@/components/atoms/Checkbox";
 
 const TaskCard = ({ 
   task, 
@@ -51,7 +51,7 @@ const TaskCard = ({
     }
   };
 
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !task.completed;
+const isOverdue = task.due_date && new Date(task.due_date) < new Date() && !task.completed;
 
   return (
     <motion.div
@@ -73,7 +73,7 @@ const TaskCard = ({
             onChange={(e) => onSelect(task.id, e.target.checked)}
             className="mt-1"
           />
-          <motion.div
+<motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
@@ -114,13 +114,13 @@ const TaskCard = ({
                   {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
                 </Badge>
                 
-                {task.dueDate && (
+{task.due_date && (
                   <span className={cn(
                     "flex items-center space-x-1",
                     isOverdue && "text-red-600 font-medium"
                   )}>
                     <ApperIcon name="Calendar" className="h-3 w-3" />
-                    <span>{format(new Date(task.dueDate), "MMM d, yyyy")}</span>
+                    <span>{format(new Date(task.due_date), "MMM d, yyyy")}</span>
                     {isOverdue && <span className="text-red-500">• Overdue</span>}
                   </span>
                 )}

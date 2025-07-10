@@ -64,13 +64,13 @@ if (searchQuery) {
     }
 
 // Apply sorting
-    filtered.sort((a, b) => {
+filtered.sort((a, b) => {
       switch (sortBy) {
         case "dueDate":
-          if (!a.dueDate && !b.dueDate) return 0;
-          if (!a.dueDate) return 1;
-          if (!b.dueDate) return -1;
-          return new Date(a.dueDate) - new Date(b.dueDate);
+          if (!a.due_date && !b.due_date) return 0;
+          if (!a.due_date) return 1;
+          if (!b.due_date) return -1;
+          return new Date(a.due_date) - new Date(b.due_date);
         case "priority": {
           const priorityOrder = { high: 3, medium: 2, low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];

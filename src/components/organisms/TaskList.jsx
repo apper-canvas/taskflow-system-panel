@@ -30,7 +30,7 @@ const TaskList = ({
   };
 
   const handleSelectAll = (isSelected) => {
-    setSelectedTasks(isSelected ? tasks.map(task => task.id) : []);
+setSelectedTasks(isSelected ? tasks.map(task => task.Id) : []);
   };
 
   const handleClearSelection = () => {
@@ -84,7 +84,7 @@ const TaskList = ({
             <TaskCard
               key={task.id}
               task={task}
-              isSelected={selectedTasks.includes(task.id)}
+isSelected={selectedTasks.includes(task.Id)}
               onSelect={handleSelectTask}
               onToggleComplete={onToggleComplete}
               onEdit={onEdit}
