@@ -79,12 +79,12 @@ setSelectedTasks(isSelected ? tasks.map(task => task.Id) : []);
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        <AnimatePresence>
+<AnimatePresence>
           {tasks.map((task) => (
             <TaskCard
-              key={task.id}
+              key={task.Id}
               task={task}
-isSelected={selectedTasks.includes(task.Id)}
+              isSelected={selectedTasks.includes(task.Id)}
               onSelect={handleSelectTask}
               onToggleComplete={onToggleComplete}
               onEdit={onEdit}
